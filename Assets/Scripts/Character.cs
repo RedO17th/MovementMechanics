@@ -8,13 +8,13 @@ namespace MyOwnSandBox.Character
     {
         [SerializeField] private ControllerManager _controllerManager;
 
-        
-
+        //
         [SerializeField] private float _speedMovement;
         [SerializeField] private float _speedMovementAcceleration;
 
         [SerializeField] private float _speedRotation;
 
+        //
         [Header("Jerk")]
         [SerializeField] private float _jerkStep;
 
@@ -23,6 +23,7 @@ namespace MyOwnSandBox.Character
         private float _yJumpHeight = 0f;
 
         private JumpController _jumpController;
+        private GravityController _gravityController;
 
         private void Awake()
         {
@@ -31,6 +32,7 @@ namespace MyOwnSandBox.Character
             _controllerManager.Initialize(this);
 
             _jumpController = (JumpController)_controllerManager.GetController(ControllerType.JumpController);
+            _gravityController = (GravityController)_controllerManager.GetController(ControllerType.GravityController);
         }
 
         private void Update()
@@ -43,9 +45,9 @@ namespace MyOwnSandBox.Character
                 transform.rotation *= rotation;
             }
 
-            _yJumpHeight += Physics.gravity.y * _jumpController._fallSpeed * Time.deltaTime;
+            _yJumpHeight += Physics.gravity.y * _gravityController._fallSpeed * Time.deltaTime;
 
-            if (_jumpController.IsGrounded && _yJumpHeight < 0)
+            if (_gravityController.IsGrounded && _yJumpHeight < 0)
                 _yJumpHeight = -2f;
 
             var verticalAxis = Input.GetAxisRaw("Vertical");

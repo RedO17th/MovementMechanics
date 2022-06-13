@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MyOwnSandBox.Character
 { 
-    public enum ControllerType { None = -1, JumpController }
+    public enum ControllerType { None = -1, JumpController, GravityController }
 
     public class ControllerManager : MonoBehaviour
     {

@@ -5,27 +5,17 @@ using UnityEngine;
 
 public class JumpController : BaseController
 {
+    [Space]
     [Header("Jump")]
     [Range(1f, 2f)]
     [SerializeField] private float _jumpHeight;
-    public float _fallSpeed;
     [SerializeField] private AnimationCurve _smallJump;
     [SerializeField] private AnimationCurve _TestJump;
-
-    [SerializeField] private Transform _groundChecker;
-    [SerializeField] private LayerMask _groundLayer;
-
-    [Range(0f, 1f)]
-    [SerializeField] private float _groundCheckerRadius;
-
-    public bool IsGrounded
-    {
-        get => Physics.CheckSphere(_groundChecker.position, _groundCheckerRadius, _groundLayer, QueryTriggerInteraction.Ignore);
-    }
 
     public bool IsJumped { get; private set; } = false;
 
     private CharacterController _charController;
+    private GravityController _gravityController;
 
     //Здесь будут размещаться несколько типо прыжков - полиморфизировать
     //weak jump
@@ -38,17 +28,14 @@ public class JumpController : BaseController
         base.Initialize(manager);
 
         _charController = _controllerManager.Character.CharController;
+
+        _gravityController = (GravityController)_controllerManager.GetController(ControllerType.GravityController);
     }
 
     private void Update()
     {
-        if (IsGrounded && Input.GetKeyDown(KeyCode.Space))
-            ExecuteMechanic();
-    }
-
-    public override void ExecuteMechanic()
-    {
-        StartCoroutine(TestJump(1f));
+        if (_gravityController.IsGrounded && Input.GetKeyDown(KeyCode.Space))
+            StartCoroutine(TestJump(1f));
     }
 
     private IEnumerator TestJump(float duration)
@@ -94,11 +81,5 @@ public class JumpController : BaseController
         }
 
         IsJumped = false;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(_groundChecker.position, _groundCheckerRadius);
     }
 }

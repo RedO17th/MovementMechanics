@@ -15,6 +15,4 @@ public abstract class BaseController : MonoBehaviour
     {
         _controllerManager = manager;
     }
-
-    public abstract void ExecuteMechanic();
 }
