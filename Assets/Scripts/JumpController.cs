@@ -27,15 +27,15 @@ public class JumpController : BaseController
     {
         base.Initialize(manager);
 
-        _charController = _controllerManager.Character.CharController;
+        _charController = ControllerManager.Character.CharController;
 
-        _gravityController = (GravityController)_controllerManager.GetController(ControllerType.GravityController);
+        _gravityController = (GravityController)ControllerManager.GetController(ControllerType.GravityController);
     }
 
     private void Update()
     {
-        if (_gravityController.IsGrounded && Input.GetKeyDown(KeyCode.Space))
-            StartCoroutine(TestJump(1f));
+        //if (_gravityController.IsGrounded && Input.GetKeyDown(KeyCode.Space))
+        //    StartCoroutine(TestJump(1f));
     }
 
     private IEnumerator TestJump(float duration)

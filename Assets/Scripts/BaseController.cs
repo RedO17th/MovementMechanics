@@ -9,10 +9,10 @@ public abstract class BaseController : MonoBehaviour
 
     public ControllerType ControllerType => _controllerType;
 
-    protected ControllerManager _controllerManager;
+    public ControllerManager ControllerManager { get; private set; }
 
     public virtual void Initialize(ControllerManager manager)
     {
-        _controllerManager = manager;
+        ControllerManager = manager;
     }
 }
