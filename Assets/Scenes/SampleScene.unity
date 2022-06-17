@@ -228,11 +228,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controllerType: 2
-  _walkSpeed: 3
-  _runSpeed: 6
-  _fastRunSpeed: 10
+  _movementSettings:
+    _walkSpeed: 3
+    _runSpeed: 5
+    _fastRunSpeed: 7
+    _jerkSpeed: 5
   _speedRotation: 300
-  _jerkStep: 7
 --- !u!1 &547147151
 GameObject:
   m_ObjectHideFlags: 0
