@@ -1,4 +1,4 @@
-using MyOwnSandBox.Character;
+using MyOwnSandBox.EmptyCharacter;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,9 +14,7 @@ public class GravityController : BaseController
     [Range(0f, 1f)]
     [SerializeField] private float _groundCheckerRadius;
 
-    public float YPositionByGravity => _yJumpHeight;
-
-    private float _yJumpHeight = 0f;
+    public float YPositionByGravity { get; private set; }
 
     public bool IsGrounded
     {
@@ -25,10 +23,10 @@ public class GravityController : BaseController
 
     private void Update()
     {
-        _yJumpHeight += Physics.gravity.y * _fallSpeed * Time.deltaTime;
+        YPositionByGravity += Physics.gravity.y * _fallSpeed * Time.deltaTime;
 
-        if (IsGrounded && _yJumpHeight < 0)
-            _yJumpHeight = -2f;
+        if (IsGrounded && YPositionByGravity < 0)
+            YPositionByGravity = -2f;
     }
 
     private void OnDrawGizmosSelected()

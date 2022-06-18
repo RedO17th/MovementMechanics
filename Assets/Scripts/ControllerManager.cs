@@ -1,10 +1,10 @@
-using MyOwnSandBox.Character;
+using MyOwnSandBox.EmptyCharacter;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MyOwnSandBox.Character
+namespace MyOwnSandBox.EmptyCharacter
 { 
     public enum ControllerType { None = -1, JumpController, GravityController, MovementController }
 

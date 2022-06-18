@@ -1,4 +1,4 @@
-using MyOwnSandBox.Character;
+using MyOwnSandBox.EmptyCharacter;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
