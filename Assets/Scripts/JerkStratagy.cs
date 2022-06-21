@@ -1,21 +1,27 @@
 ﻿using UnityEngine;
 
-public class JerkStratagy : BaseMovementStratagy
+public class JerkStratagy
 {
-    private float _jerkSpeed = 5f;
+    //private float _jerkDistance = 5f;
 
-    public JerkStratagy(MovementController controller) : base(controller) 
-    {
-        _jerkSpeed = controller.MovementSettings.JerkSpeed;
-    }
+    //public JerkStratagy(JumpController controller) : base(controller)
+    //{
+    //    _jerkDistance = controller.JerkDistance;
+    //}
 
-    public override void Move()
-    {
-        float movementDirection = Input.GetAxisRaw("Vertical");
-        Vector3 jerkStep = _character.ForwardDirection * _jerkSpeed;
+    //public override void Jump()
+    //{
+    //    float movementDirection = Input.GetAxisRaw("Vertical");
+    //    Vector3 jerkStep = _character.ForwardDirection * _jerkDistance;
 
-        Vector3 jerk = (movementDirection != 0) ? movementDirection * jerkStep : jerkStep;
+    //    Vector3 jerk = (movementDirection != 0) ? movementDirection * jerkStep : jerkStep;
 
-        _character.Move(jerk);
-    }
+    //    _character.Move(jerk);
+    //}
+
+    //public override void StopJump()
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }
+

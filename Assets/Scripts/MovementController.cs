@@ -21,8 +21,7 @@ public class MovementController : BaseController
         {
             {  new WalkStrategyCondition(), new WalkStratagy(this) },
             {  new RunStrategyCondition(), new RunStratagy(this) },
-            {  new FastRunStrategyCondition(), new FastRunStratagy(this) },
-            {  new JerkStrategyCondition(), new JerkStratagy(this) }
+            {  new FastRunStrategyCondition(), new FastRunStratagy(this) }
         };
     }
 

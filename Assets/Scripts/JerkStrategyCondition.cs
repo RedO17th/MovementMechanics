@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-public class JerkStrategyCondition : MovementStrategyCondition
+public class JerkStrategyCondition
 {
-    public override bool CheckCondition()
+    public bool CheckCondition()
     {
         return Input.GetKeyDown(KeyCode.LeftControl);
     }
-    public override void Log()
+    public void Log()
     {
         Debug.Log($"JerkStrategyCondition");
     }

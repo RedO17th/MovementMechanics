@@ -5,82 +5,32 @@ using UnityEngine;
 
 public class JumpController : BaseController
 {
-    [Space]
-    [Header("Jump")]
-    [Range(1f, 2f)]
-    [SerializeField] private float _jumpHeight;
-    [SerializeField] private AnimationCurve _smallJump;
-    [SerializeField] private AnimationCurve _TestJump;
+    [SerializeField] private JumpSettings _jumpSettings;
+    public JumpSettings JumpSettings => _jumpSettings;
 
-    public bool IsJumped { get; private set; } = false;
+    public bool IsJumped => _jumpStratagy.IsJumped;
 
-    //private CharacterController _charController;
-    //private GravityController _gravityController;
+    private GravityController _gravityController;
 
-    //Здесь будут размещаться несколько типо прыжков - полиморфизировать
-    //small jump
-    //medium jump
-    //big jump
-    //Скорее всего необходимо добавить интерфейс IJumpable и передавать данный интерфейс в текущий контроллер
+    private BaseJumpStratagy _jumpStratagy = null;
 
     public override void Initialize(ControllerManager manager)
     {
         base.Initialize(manager);
 
-        //_charController = ControllerManager.Character.CharController;
-        //_gravityController = (GravityController)ControllerManager.GetController(ControllerType.GravityController);
+        _gravityController = (GravityController)ControllerManager.GetController(ControllerType.GravityController);
+
+        _jumpStratagy = new SmallJumpStratagy(this);
     }
 
     private void Update()
     {
-        //if (_gravityController.IsGrounded && Input.GetKeyDown(KeyCode.Space))
-        //    StartCoroutine(TestJump(1f));
+        if (_gravityController.IsGrounded && Input.GetKeyDown(KeyCode.Space))
+            _jumpStratagy.Jump();
+
+        
+
     }
-
-    //private IEnumerator TestJump(float duration)
-    //{
-    //    IsJumped = true;
-
-    //    float time = 0f;
-    //    float mechanicProgress = 0f;
-
-    //    float currentYValue = 0f;
-    //    float previousYValue = 0f;
-
-    //    float wayForwardByJump = 3f;
-    //    Vector3 distanceDirection = transform.forward * wayForwardByJump;
-
-    //    while (mechanicProgress < 1)
-    //    {
-    //        time += Time.deltaTime;
-    //        mechanicProgress = time / duration;
-
-    //        var deltaJumpValue = 0f;
-    //        currentYValue = _TestJump.Evaluate(time);
-
-    //        if (currentYValue > previousYValue)
-    //        {
-    //            deltaJumpValue = currentYValue - previousYValue;
-    //            previousYValue = currentYValue;
-    //        }
-    //        else
-    //        {
-    //            previousYValue -= currentYValue;
-    //            deltaJumpValue = previousYValue * -1;
-
-    //            previousYValue = currentYValue;
-    //        }
-
-    //        var moveVector = distanceDirection * Time.deltaTime;
-    //            moveVector.y = deltaJumpValue * _jumpHeight;
-
-    //        _charController.Move(moveVector);
-
-    //        yield return null;
-    //    }
-
-    //    IsJumped = false;
-    //}
 }
 
 public abstract class BaseJumpStratagy
@@ -97,25 +47,41 @@ public abstract class BaseJumpStratagy
     }
 
     public abstract void Jump();
+    public abstract void StopJump();
 }
 
 public class SmallJumpStratagy : BaseJumpStratagy
 {
-    private GravityController _gravityController;
+    private float _jumpHeight;
+    private float _jumpTime;
+    private AnimationCurve _jumpCurve;
+
+    private Coroutine _jumpRoutine;
 
     public SmallJumpStratagy(JumpController jumpController) : base(jumpController)
     {
-        _gravityController = (GravityController)_jumpController.ControllerManager.GetController(ControllerType.GravityController);
+        _jumpCurve = _jumpController.JumpSettings.JumpCurve;
+        _jumpHeight = _jumpController.JumpSettings.JumpHeight;
+        _jumpTime = _jumpController.JumpSettings.JumpTime;
     }
 
     public override void Jump()
     {
-        _jumpController.StartCoroutine(JumpRealisation(1f));
+        _jumpRoutine = _jumpController.StartCoroutine(JumpRealisation());
     }
 
-    private IEnumerator JumpRealisation(float duration)
+    public override void StopJump()
+    {
+        _jumpController.StopCoroutine(_jumpRoutine);
+        _jumpRoutine = null;
+
+        IsJumped = false;
+    }
+
+    private IEnumerator JumpRealisation()
     {
         IsJumped = true;
+        Debug.Log($"JumpController.JumpRealisation.StartJump");
 
         float time = 0f;
         float mechanicProgress = 0f;
@@ -123,17 +89,23 @@ public class SmallJumpStratagy : BaseJumpStratagy
         float currentYValue = 0f;
         float previousYValue = 0f;
 
-        float wayForwardByJump = 3f;
-        Vector3 distanceDirection = transform.forward * wayForwardByJump;
+        //[1]
+        //Здесь игрок будет двигаться вперед в течении wayForwardByJump [REFACT] - Тоже не верно, 
+        //_jumpTime должен регулировать время всей "анимации", а не просто сдвиг вперед
+        float jumpStepToforward = _jumpTime;
+        var jumpDistance = _character.ForwardDirection * jumpStepToforward;
+        //..
 
         while (mechanicProgress < 1)
         {
+            //Есть прогресс механики через ее время
             time += Time.deltaTime;
-            mechanicProgress = time / duration;
+            mechanicProgress = time / _jumpTime;
+            //Но в Curve сам прыжок заканчивается раньше... Нужно сделать так, чтобы и сам прыжок заканчивался соответственно mechanicProgress
+            //currentYValue = _jumpCurve.Evaluate(time);
+            currentYValue = _jumpCurve.Evaluate(mechanicProgress);
 
             var deltaJumpValue = 0f;
-            currentYValue = _TestJump.Evaluate(time);
-
             if (currentYValue > previousYValue)
             {
                 deltaJumpValue = currentYValue - previousYValue;
@@ -147,14 +119,34 @@ public class SmallJumpStratagy : BaseJumpStratagy
                 previousYValue = currentYValue;
             }
 
-            var moveVector = distanceDirection * Time.deltaTime;
+            //[1]
+            //var moveVector = jumpDistance * Time.deltaTime;
+            var moveVector = Vector3.zero;
                 moveVector.y = deltaJumpValue * _jumpHeight;
+            //..
 
-            _charController.Move(moveVector);
+            _character.Jump(moveVector);
 
             yield return null;
         }
 
+        Debug.Log($"JumpController.JumpRealisation.EndJump");
         IsJumped = false;
     }
+}
+
+
+[System.Serializable]
+public class JumpSettings
+{
+    [SerializeField] private string _nameJumpStratagy;
+
+    [Range(1f, 2f)]
+    [SerializeField] private float _jumpHeight;
+    [SerializeField] private float _jumpTime;
+    [SerializeField] private AnimationCurve _jumpCurve;
+
+    public float JumpHeight => _jumpHeight;
+    public float JumpTime => _jumpTime;
+    public AnimationCurve JumpCurve => _jumpCurve;
 }
