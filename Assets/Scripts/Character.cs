@@ -9,8 +9,10 @@ namespace MyOwnSandBox.EmptyCharacter
         [SerializeField] private ControllerManager _controllerManager;
 
         public CharacterController CharController { get; private set; }
-        public Vector3 ForwardDirection => transform.forward;
-        public Quaternion Rotation => transform.rotation;
+
+        public Vector3 ForwardDirection { get => transform.forward; }
+        public Vector3 Position { get => transform.position; }
+        public Quaternion Rotation { get => transform.rotation; }
 
         private void Awake()
         {

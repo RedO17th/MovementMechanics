@@ -89,21 +89,16 @@ public class SmallJumpStratagy : BaseJumpStratagy
         float currentYValue = 0f;
         float previousYValue = 0f;
 
-        //[1]
-        //Здесь игрок будет двигаться вперед в течении wayForwardByJump [REFACT] - Тоже не верно, 
-        //_jumpTime должен регулировать время всей "анимации", а не просто сдвиг вперед
-        float jumpStepToforward = _jumpTime;
-        var jumpDistance = _character.ForwardDirection * jumpStepToforward;
-        //..
+        float curveTime = _jumpCurve.keys[_jumpCurve.keys.Length - 1].time;
+        float tempCurveTime = 0f;
 
         while (mechanicProgress < 1)
         {
-            //Есть прогресс механики через ее время
             time += Time.deltaTime;
             mechanicProgress = time / _jumpTime;
-            //Но в Curve сам прыжок заканчивается раньше... Нужно сделать так, чтобы и сам прыжок заканчивался соответственно mechanicProgress
-            //currentYValue = _jumpCurve.Evaluate(time);
-            currentYValue = _jumpCurve.Evaluate(mechanicProgress);
+
+            tempCurveTime = mechanicProgress * curveTime;
+            currentYValue = _jumpCurve.Evaluate(tempCurveTime);
 
             var deltaJumpValue = 0f;
             if (currentYValue > previousYValue)
@@ -119,11 +114,8 @@ public class SmallJumpStratagy : BaseJumpStratagy
                 previousYValue = currentYValue;
             }
 
-            //[1]
-            //var moveVector = jumpDistance * Time.deltaTime;
-            var moveVector = Vector3.zero;
+            var moveVector = _character.Position;
                 moveVector.y = deltaJumpValue * _jumpHeight;
-            //..
 
             _character.Jump(moveVector);
 
