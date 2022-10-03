@@ -10,9 +10,9 @@ namespace MyOwnSandBox.EmptyCharacter
 
         public CharacterController CharController { get; private set; }
 
-        public Vector3 ForwardDirection { get => transform.forward; }
-        public Vector3 Position { get => transform.position; }
-        public Quaternion Rotation { get => transform.rotation; }
+        public Vector3 ForwardDirection => transform.forward;
+        public Vector3 Position => transform.position;
+        public Quaternion Rotation => transform.rotation;
 
         private void Awake()
         {

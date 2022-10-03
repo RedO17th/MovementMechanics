@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 43125040}
+  - component: {fileID: 43125041}
   m_Layer: 0
   m_Name: GroundChecker
   m_TagString: Untagged
@@ -153,6 +154,22 @@ Transform:
   m_Father: {fileID: 1887860336}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &43125041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43125039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7e48e68e471ca4db1fe10feb2d4713, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _groundCheckerRadius: 0.3
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &424872148
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,11 +568,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controllerType: 1
   _fallSpeed: 3
-  _groundChecker: {fileID: 43125040}
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  _groundCheckerRadius: 0.3
+  _groundChecker: {fileID: 43125041}
 --- !u!1001 &1116678628
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -662,7 +675,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controllerType: 0
-  _jerkDistance: 5
   _jumpSettings:
     _nameJumpStratagy: Small Jump
     _jumpHeight: 2
